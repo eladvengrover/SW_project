@@ -5,11 +5,6 @@
 # include "general.h"
 
 
-void handle_errors() {
-    printf("An Error Has Occurred");
-    exit(1);
-}
-
 int read_points(vector *head_vec, int* d, char* file_name) {
     vector *last_vec, *curr_vec;
     cord *head_cord, *curr_cord;
@@ -17,7 +12,7 @@ int read_points(vector *head_vec, int* d, char* file_name) {
     char c;
     int n = 0, d_flag = 1;
     FILE *f = fopen("C:\\Users\\Elad\\CLionProjects\\SW_project\\final_proj\\input.txt", "r");
-
+    // TODO - remove hard-coded path and use file_name instead
 
 
     head_cord = head_vec->cords;
@@ -120,9 +115,58 @@ vector* sym(vector* X, int n) {
 }
 
 
+vector* ddg(vector* A, int n) {
+    vector *D = init_zero_matrix(n), *D_i = D;
+    cord* D_j;
+    vector *curr_vec = A;
+    double vec_sums[n];
+    for (int i = 0; i < n; ++i) {
+        vec_sums[i] = get_vector_sum(curr_vec);
+        curr_vec = curr_vec->next;
+    }
+
+    for (int i = 0; i < n; ++i) {  // Running on rows
+        D_j = D_i->cords;
+        for (int j = 0; j < n; ++j) {  // Running on cols
+            if (i == j) {
+                D_j->value = vec_sums[i];
+                break;
+            }
+            D_j = D_j->next;
+        }
+        D_i = D_i->next;
+    }
+    return D;
+}
+
+vector* norm(vector* A, vector* D, int n) {
+    vector *W = init_zero_matrix(n);
+    double* D_diag = get_matrix_diag_values(D, n);
+    D_diag = pow_mat_diag_values(D_diag, n, -0.5);
+    vector* curr_A_row = A, *curr_W_row = W;
+    cord* curr_A_cord, *curr_W_cord;
+
+    for (int i = 0; i < n; ++i) {
+        curr_A_cord = curr_A_row->cords;
+        curr_W_cord = curr_W_row->cords;
+        for (int j = 0; j < n; ++j) {
+            if (i == j) {
+                continue;
+            }
+            curr_W_cord->value = D_diag[i] * D_diag[j] * curr_A_cord->value;
+            curr_A_cord = curr_A_cord->next;
+            curr_W_cord = curr_W_cord->next;
+        }
+        curr_A_row = curr_A_row->next;
+        curr_W_row = curr_W_row->next;
+    }
+    return W;
+}
+
+
 
 int main(int argc, char **argv) {
-    vector *head_vec, *A = NULL;
+    vector *head_vec, *A = NULL, *D = NULL, *W = NULL;
     cord *curr_cord;
     int n,  i, d_value = 0;
 
@@ -143,17 +187,27 @@ int main(int argc, char **argv) {
     head_vec->cords->value = 0;
     head_vec->cords->next = NULL;
 
-
     n = read_points(head_vec, &d_value, file_name);
 
     if (strcmp(goal, "sym") == 0) {
         A = sym(head_vec, n);
+        print_vec_arr(A);
+    } else if (strcmp(goal, "ddg") == 0) {
+        A = sym(head_vec, n);
+        D = ddg(A, n);
+        print_vec_arr(D);
+    } else if (strcmp(goal, "norm") == 0) {
+        A = sym(head_vec, n);
+        D = ddg(A, n);
+        W = norm(A, D, n);
+        print_vec_arr(W);
     }
-
-    print_vec_arr(A);
 
     /**Free reest of memory*/
     free_vec(head_vec);
+    free_vec(A);
+    free_vec(D);
+    free_vec(W);
 
     return 0;
 }
