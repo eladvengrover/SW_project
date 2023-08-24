@@ -76,41 +76,23 @@ int read_points(vector *head_vec, int* d, char* file_name) {
 
 
 vector* sym(vector* X, int n) {
-    vector *A = malloc(sizeof (vector)), *A_curr = A;
-    cord* cord_curr;
-    vector *X_i = X, *X_j;  // running pointers on X rows/cols
-    if (A == NULL) {
-        handle_errors();
-    }
+    vector *A = init_zero_matrix(n), *curr_A_row = A;
+    vector *X_i = X, *X_j;
+    cord *curr_A_cord;
 
-    for (int i = 0; i < n; ++i) {  // Running on rows
-        A_curr->cords = malloc(sizeof (cord));
-        if (A_curr->cords == NULL) {
-            handle_errors();
-        }
-        cord_curr = A_curr->cords;
+    for (int i = 0; i < n; ++i) {
         X_j = X;
-        for (int j = 0; j < n; ++j) {  // Running on cols
-            if (i == j) {
-                cord_curr->value = 0;
-            } else {
-                cord_curr->value = exp(-0.5 * euclidean_dist(X_i->cords, X_j->cords));
-            }
-            if (j != n - 1) {  // Handle all cols except the last one
-                cord_curr->next = malloc(sizeof (cord));
-                cord_curr = cord_curr->next;
+        curr_A_cord = curr_A_row->cords;
+        for (int j = 0; j < n; ++j) {
+            if (i != j) {
+                curr_A_cord->value = exp(-0.5 * euclidean_dist(X_i->cords, X_j->cords));
             }
             X_j = X_j->next;
-        }
-        cord_curr->next = NULL;
-        if (i != n - 1) {  // Handle all lines except the last one
-            A_curr->next = malloc(sizeof (vector));
-            A_curr = A_curr->next;
+            curr_A_cord = curr_A_cord->next;
         }
         X_i = X_i->next;
+        curr_A_row = curr_A_row->next;
     }
-    A_curr->next = NULL;
-
     return A;
 }
 
@@ -162,7 +144,6 @@ vector* norm(vector* A, vector* D, int n) {
     }
     return W;
 }
-
 
 
 int main(int argc, char **argv) {
