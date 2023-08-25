@@ -50,7 +50,6 @@ int read_points(vector *head_vec, int* d, char* file_name) {
                 (*d)++;
             }
             d_flag = 0;
-            n++;
             continue;
         }
 
