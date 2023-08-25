@@ -147,7 +147,7 @@ vector* norm(vector* A, vector* D, int n) {
 
 
 int main(int argc, char **argv) {
-    vector *head_vec, *A = NULL, *D = NULL, *W = NULL;
+    vector *X, *A = NULL, *D = NULL, *W = NULL;
     cord *curr_cord;
     int n,  i, d_value = 0;
 
@@ -156,36 +156,36 @@ int main(int argc, char **argv) {
     char* file_name = argv[2];
 
     /**Allocating memory for head of vectors LL*/
-    head_vec = malloc(sizeof(struct vector));
-    if (head_vec == NULL) {
+    X = malloc(sizeof(struct vector));
+    if (X == NULL) {
         handle_errors();
     }
-    head_vec->next = NULL;
-    head_vec->cords = malloc(sizeof(cord));
-    if (head_vec->cords == NULL) {
+    X->next = NULL;
+    X->cords = malloc(sizeof(cord));
+    if (X->cords == NULL) {
         handle_errors();
     }
-    head_vec->cords->value = 0;
-    head_vec->cords->next = NULL;
+    X->cords->value = 0;
+    X->cords->next = NULL;
 
-    n = read_points(head_vec, &d_value, file_name);
+    n = read_points(X, &d_value, file_name);
 
     if (strcmp(goal, "sym") == 0) {
-        A = sym(head_vec, n);
+        A = sym(X, n);
         print_vec_arr(A);
     } else if (strcmp(goal, "ddg") == 0) {
-        A = sym(head_vec, n);
+        A = sym(X, n);
         D = ddg(A, n);
         print_vec_arr(D);
     } else if (strcmp(goal, "norm") == 0) {
-        A = sym(head_vec, n);
+        A = sym(X, n);
         D = ddg(A, n);
         W = norm(A, D, n);
         print_vec_arr(W);
     }
 
     /**Free reest of memory*/
-    free_vec(head_vec);
+    free_vec(X);
     free_vec(A);
     free_vec(D);
     free_vec(W);
