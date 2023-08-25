@@ -4,6 +4,7 @@
 # include <string.h>
 # include "general.h"
 
+// asdasfajn
 
 int read_points(vector *head_vec, int* d, char* file_name) {
     vector *last_vec, *curr_vec;
