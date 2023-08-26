@@ -167,7 +167,7 @@ int main(int argc, char **argv) {
     }
     X->cords->value = 0;
     X->cords->next = NULL;
-
+    //TODO - consider removing d
     n = read_points(X, &d_value, file_name);
 
     if (strcmp(goal, "sym") == 0) {
