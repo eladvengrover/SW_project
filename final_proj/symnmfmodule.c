@@ -86,14 +86,14 @@ static PyMethodDef cMethods[] = {
                 (PyCFunction) sym_wrapper, /* the C-function that implements the Python function and returns static PyObject*  */
                      METH_VARARGS,
                 PyDoc_STR("Returns similarity matrix")},
-        {"ddg",                   /* the Python method name that will be used */
-                (PyCFunction) ddg_wrapper, /* the C-function that implements the Python function and returns static PyObject*  */
-                     METH_VARARGS,
-                PyDoc_STR("Returns diagonal degree matrix")},
-        {"norm",                   /* the Python method name that will be used */
-                (PyCFunction) norn_wrapper, /* the C-function that implements the Python function and returns static PyObject*  */
-                     METH_VARARGS,
-                PyDoc_STR("Returns normalized similarity matrix")},
+//        {"ddg",                   /* the Python method name that will be used */
+//                (PyCFunction) ddg_wrapper, /* the C-function that implements the Python function and returns static PyObject*  */
+//                     METH_VARARGS,
+//                PyDoc_STR("Returns diagonal degree matrix")},
+//        {"norm",                   /* the Python method name that will be used */
+//                (PyCFunction) norn_wrapper, /* the C-function that implements the Python function and returns static PyObject*  */
+//                     METH_VARARGS,
+//                PyDoc_STR("Returns normalized similarity matrix")},
         {NULL, NULL, 0, NULL}     /* The last entry must be all NULL as shown to act as a
                                  sentinel. Python looks for this entry to know that all
                                  of the functions for the module have been defined. */
@@ -101,13 +101,13 @@ static PyMethodDef cMethods[] = {
 
 static struct PyModuleDef cmodule = {
         PyModuleDef_HEAD_INIT,
-        "symmnfmodule", /* name of module */
+        "symmnfAPI", /* name of module */
         NULL, /* module documentation, may be NULL */
         -1,  /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */
         cMethods /* the PyMethodDef array from before containing the methods of the extension */
 };
 
-PyMODINIT_FUNC PyInit_symmnfmodule(void)
+PyMODINIT_FUNC PyInit_symmnfAPI(void)
 {
     PyObject *m;
     m = PyModule_Create(&cmodule);

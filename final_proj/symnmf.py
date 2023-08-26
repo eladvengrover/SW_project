@@ -1,6 +1,6 @@
 import sys
 import pandas as pd
-# import symnmfAPI
+import symmnfAPI
 
 
 SYMNMF = "symnmf"
