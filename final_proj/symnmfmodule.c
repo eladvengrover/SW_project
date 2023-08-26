@@ -1,6 +1,7 @@
 #define PY_SSIZE_T_CLEAN
 # include <Python.h>
 # include "general.h"
+# include "symnmf.h"
 
 
 vector* py_obj_to_verctor(PyObject *head_vec_obj, int d) {
