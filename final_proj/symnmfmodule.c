@@ -59,7 +59,6 @@ PyObject* vector_to_py_obj(vector *vec, int n, int d) {
 static PyObject* sym_wrapper(PyObject *self, PyObject *args)
 {
     PyObject* X_obj;
-    PyObject* centroids_obj;
     PyObject* py_output;
     int n, d = 0;
     /* This parses the Python arguments into C variables*/
@@ -71,11 +70,69 @@ static PyObject* sym_wrapper(PyObject *self, PyObject *args)
     n = PyObject_Length(X_obj);
     vector *A = sym(X, n);
 
-    py_output = vector_to_py_obj(output, n, d);
+    py_output = vector_to_py_obj(A, n, d);
 
     /**Free reest of memory*/
     free_vec(X);
     free_vec(A);
+
+
+    return Py_BuildValue("O", py_output);
+}
+
+
+
+static PyObject* ddg_wrapper(PyObject *self, PyObject *args)
+{
+    PyObject* X_obj;
+    PyObject* py_output;
+    int n, d = 0;
+    /* This parses the Python arguments into C variables*/
+    if(!PyArg_ParseTuple(args, "O", &X_obj)) {
+        return NULL;
+    }
+
+    vector *X = py_obj_to_verctor(X_obj, &d);
+    n = PyObject_Length(X_obj);
+    vector *A = sym(X, n);
+    vector *D = ddg(A, n);
+
+
+    py_output = vector_to_py_obj(D, n, d);
+
+    /**Free reest of memory*/
+    free_vec(X);
+    free_vec(A);
+    free_vec(D);
+
+
+    return Py_BuildValue("O", py_output);
+}
+
+static PyObject* norm_wrapper(PyObject *self, PyObject *args)
+{
+    PyObject* X_obj;
+    PyObject* py_output;
+    int n, d = 0;
+    /* This parses the Python arguments into C variables*/
+    if(!PyArg_ParseTuple(args, "O", &X_obj)) {
+        return NULL;
+    }
+
+    vector *X = py_obj_to_verctor(X_obj, &d);
+    n = PyObject_Length(X_obj);
+    vector *A = sym(X, n);
+    vector *D = ddg(A, n);
+    vector *W = norm(A, D, n);
+
+
+    py_output = vector_to_py_obj(W, n, d);
+
+    /**Free reest of memory*/
+    free_vec(X);
+    free_vec(A);
+    free_vec(D);
+    free_vec(W);
 
 
     return Py_BuildValue("O", py_output);
@@ -86,14 +143,14 @@ static PyMethodDef cMethods[] = {
                 (PyCFunction) sym_wrapper, /* the C-function that implements the Python function and returns static PyObject*  */
                      METH_VARARGS,
                 PyDoc_STR("Returns similarity matrix")},
-//        {"ddg",                   /* the Python method name that will be used */
-//                (PyCFunction) ddg_wrapper, /* the C-function that implements the Python function and returns static PyObject*  */
-//                     METH_VARARGS,
-//                PyDoc_STR("Returns diagonal degree matrix")},
-//        {"norm",                   /* the Python method name that will be used */
-//                (PyCFunction) norn_wrapper, /* the C-function that implements the Python function and returns static PyObject*  */
-//                     METH_VARARGS,
-//                PyDoc_STR("Returns normalized similarity matrix")},
+        {"ddg",                   /* the Python method name that will be used */
+                (PyCFunction) ddg_wrapper, /* the C-function that implements the Python function and returns static PyObject*  */
+                     METH_VARARGS,
+                PyDoc_STR("Returns diagonal degree matrix")},
+        {"norm",                   /* the Python method name that will be used */
+                (PyCFunction) norn_wrapper, /* the C-function that implements the Python function and returns static PyObject*  */
+                     METH_VARARGS,
+                PyDoc_STR("Returns normalized similarity matrix")},
         {NULL, NULL, 0, NULL}     /* The last entry must be all NULL as shown to act as a
                                  sentinel. Python looks for this entry to know that all
                                  of the functions for the module have been defined. */
