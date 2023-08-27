@@ -2,11 +2,11 @@
 # include <stdlib.h>
 # include <math.h>
 # include <string.h>
-# include "general.h"
+# include "general.c"
 
 
 int read_points(vector *head_vec, int* d, char* file_name) {
-    vector *last_vec, *curr_vec;
+    vector *last_vec = NULL, *curr_vec;
     cord *head_cord, *curr_cord;
     double dp_curr_cord;
     char c;
@@ -148,8 +148,7 @@ vector* norm(vector* A, vector* D, int n) {
 
 int main(int argc, char **argv) {
     vector *X, *A = NULL, *D = NULL, *W = NULL;
-    cord *curr_cord;
-    int n,  i, d_value = 0;
+    int n, d_value = 0;
 
     /** Read args*/
     char* goal = argv[1];
