@@ -1,19 +1,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <math.h>
-
-
-typedef struct cord
-{
-    double value;
-    struct cord *next;
-} cord;
-
-typedef struct vector
-{
-    struct vector *next;
-    struct cord *cords;
-} vector;
+# include "general.h"
 
 
 void handle_errors() {

@@ -95,7 +95,7 @@ PyObject* vector_to_py_obj(vector *vec, int n, int d) {
     python_vectors_lst = PyList_New(n);
 
     for(i = 0; i < n; i++) {
-        python_vector = PyList_New(d);
+        python_vector = PyList_New(n);
         curr_cord = curr_vec->cords;
         j = 0;
         while (curr_cord != NULL) {
@@ -125,14 +125,13 @@ static PyObject* sym_wrapper(PyObject *self, PyObject *args)
 
     vector *X = py_obj_to_vector(X_obj, d);
     n = PyObject_Length(X_obj);
-    vector *A = sym(X, n);
+    vector *A = c_sym(X, n);
 
     py_output = vector_to_py_obj(A, n, d);
 
     /**Free reest of memory*/
     free_vec(X);
     free_vec(A);
-
 
     return Py_BuildValue("O", py_output);
 }
@@ -151,8 +150,8 @@ static PyObject* ddg_wrapper(PyObject *self, PyObject *args)
 
     vector *X = py_obj_to_vector(X_obj, d);
     n = PyObject_Length(X_obj);
-    vector *A = sym(X, n);
-    vector *D = ddg(A, n);
+    vector *A = c_sym(X, n);
+    vector *D = c_ddg(A, n);
 
 
     py_output = vector_to_py_obj(D, n, d);
@@ -178,9 +177,9 @@ static PyObject* norm_wrapper(PyObject *self, PyObject *args)
 
     vector *X = py_obj_to_vector(X_obj, d);
     n = PyObject_Length(X_obj);
-    vector *A = sym(X, n);
-    vector *D = ddg(A, n);
-    vector *W = norm(A, D, n);
+    vector *A = c_sym(X, n);
+    vector *D = c_ddg(A, n);
+    vector *W = c_norm(A, D, n);
 
 
     py_output = vector_to_py_obj(W, n, d);
