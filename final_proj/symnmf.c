@@ -132,10 +132,9 @@ vector* c_norm(vector* A, vector* D, int n) {
         curr_A_cord = curr_A_row->cords;
         curr_W_cord = curr_W_row->cords;
         for (int j = 0; j < n; ++j) {
-            if (i == j) {
-                continue;
+            if (i != j) {
+                curr_W_cord->value = D_diag[i] * D_diag[j] * curr_A_cord->value;
             }
-            curr_W_cord->value = D_diag[i] * D_diag[j] * curr_A_cord->value;
             curr_A_cord = curr_A_cord->next;
             curr_W_cord = curr_W_cord->next;
         }
