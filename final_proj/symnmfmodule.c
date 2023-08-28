@@ -211,7 +211,7 @@ static PyObject* symnmf_wrapper(PyObject *self, PyObject *args)
     n = PyObject_Length(X_obj);
     vector *optimized_H = c_symnmf(H, W, n, k);
 
-    py_output = vector_to_py_obj(W, n, k);
+    py_output = vector_to_py_obj(optimized_H, n, k);
 
     /**Free reest of memory*/
     free_vec(W);
