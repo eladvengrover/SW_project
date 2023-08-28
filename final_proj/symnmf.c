@@ -144,6 +144,11 @@ vector* c_norm(vector* A, vector* D, int n) {
     return W;
 }
 
+vector* c_symnmf(vector* H, vector* W, int n, int k) {
+
+
+}
+
 
 int main(int argc, char **argv) {
     vector *X, *A = NULL, *D = NULL, *W = NULL;

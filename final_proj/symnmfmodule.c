@@ -95,7 +95,7 @@ PyObject* vector_to_py_obj(vector *vec, int n, int d) {
     python_vectors_lst = PyList_New(n);
 
     for(i = 0; i < n; i++) {
-        python_vector = PyList_New(n);
+        python_vector = PyList_New(d);
         curr_cord = curr_vec->cords;
         j = 0;
         while (curr_cord != NULL) {
@@ -127,7 +127,7 @@ static PyObject* sym_wrapper(PyObject *self, PyObject *args)
     n = PyObject_Length(X_obj);
     vector *A = c_sym(X, n);
 
-    py_output = vector_to_py_obj(A, n, d);
+    py_output = vector_to_py_obj(A, n, n);
 
     /**Free reest of memory*/
     free_vec(X);
@@ -154,7 +154,7 @@ static PyObject* ddg_wrapper(PyObject *self, PyObject *args)
     vector *D = c_ddg(A, n);
 
 
-    py_output = vector_to_py_obj(D, n, d);
+    py_output = vector_to_py_obj(D, n, n);
 
     /**Free reest of memory*/
     free_vec(X);
@@ -182,7 +182,7 @@ static PyObject* norm_wrapper(PyObject *self, PyObject *args)
     vector *W = c_norm(A, D, n);
 
 
-    py_output = vector_to_py_obj(W, n, d);
+    py_output = vector_to_py_obj(W, n, n);
 
     /**Free reest of memory*/
     free_vec(X);
@@ -193,6 +193,34 @@ static PyObject* norm_wrapper(PyObject *self, PyObject *args)
 
     return Py_BuildValue("O", py_output);
 }
+
+
+static PyObject* symnmf_wrapper(PyObject *self, PyObject *args)
+{
+    PyObject* H_obj;
+    PyObject* W_obj;
+    PyObject* py_output;
+    int n, d, k;
+    /* This parses the Python arguments into C variables*/
+    if(!PyArg_ParseTuple(args, "OOii", &H_obj, &W_obj, &d, &k)) {
+        return NULL;
+    }
+
+    vector *W = py_obj_to_vector(W_obj, d);
+    vector *H = py_obj_to_vector(H_obj, d);
+    n = PyObject_Length(X_obj);
+    vector *optimized_H = c_symnmf(H, W, n, k);
+
+    py_output = vector_to_py_obj(W, n, k);
+
+    /**Free reest of memory*/
+    free_vec(W);
+    free_vec(H);
+    free_vec(optimized_H);
+
+    return Py_BuildValue("O", py_output);
+}
+
 
 static PyMethodDef cMethods[] = {
         {"sym",                   /* the Python method name that will be used */
@@ -207,6 +235,10 @@ static PyMethodDef cMethods[] = {
                 (PyCFunction) norm_wrapper, /* the C-function that implements the Python function and returns static PyObject*  */
                      METH_VARARGS,
                 PyDoc_STR("Returns normalized similarity matrix")},
+        {"symnmf",                   /* the Python method name that will be used */
+                (PyCFunction) symnmf_wrapper, /* the C-function that implements the Python function and returns static PyObject*  */
+                     METH_VARARGS,
+                PyDoc_STR("Returns optimized H")},
         {NULL, NULL, 0, NULL}     /* The last entry must be all NULL as shown to act as a
                                  sentinel. Python looks for this entry to know that all
                                  of the functions for the module have been defined. */
