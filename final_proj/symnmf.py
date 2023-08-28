@@ -1,12 +1,15 @@
+import math
 import sys
 import pandas as pd
-import symmnfAPI
+import numpy as np
+# import symmnfAPI
 
 
 SYMNMF = "symnmf"
 SYM = "sym"
 DDG = "ddg"
 NORM = "norm"
+
 
 def prepare_args_to_c(points):
     """Convert points dataframes into list of lists in order to pass it to C program"""
@@ -17,9 +20,21 @@ def prepare_args_to_c(points):
     return points_list
 
 
-args = sys.argv
+def get_m(W):
+    avgs = [np.average(row) for row in W]
+    return sum(avgs) / len(avgs)
 
-K = args[1]
+
+def init_h(W, k, n):
+    m = get_m(W)
+    x = 2 * math.sqrt(m/k)
+    return np.random.uniform(0, x, size=(N, K))
+
+
+args = sys.argv
+np.random.seed(0)
+
+K = int(args[1])
 goal = args[2]
 file_name = "input.txt"
 
@@ -37,6 +52,10 @@ try:
         c_output = symmnfAPI.ddg(X_lst, D)
     elif goal == NORM:
         c_output = symmnfAPI.norm(X_lst, D)
+    elif goal == SYMNMF:
+        W = symmnfAPI.norm(X_lst, D)
+        H = init_h(W, K, N)
+        c_output = symmnfAPI.symnmf(H, W, D)
     for centroid in c_output:
         print(','.join('{:.4f}'.format(num) for num in centroid))
 except ValueError as e:
