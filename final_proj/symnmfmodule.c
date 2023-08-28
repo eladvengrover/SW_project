@@ -208,7 +208,7 @@ static PyObject* symnmf_wrapper(PyObject *self, PyObject *args)
 
     vector *W = py_obj_to_vector(W_obj, d);
     vector *H = py_obj_to_vector(H_obj, d);
-    n = PyObject_Length(X_obj);
+    n = PyObject_Length(W_obj);
     vector *optimized_H = c_symnmf(H, W, n, k);
 
     py_output = vector_to_py_obj(optimized_H, n, k);

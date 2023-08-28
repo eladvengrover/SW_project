@@ -152,7 +152,7 @@ double get_delta_h_norm(vector* h_new, vector *h_old) {
 vector* c_symnmf(vector* H, vector* W, int n, int k) {
     double beta = 0.5, epsilon = 0.0001, new_value;
     int max_iter = 300, iter = 0, i, j;
-    vector *H_new = init_zero_matrix(n, k), *H_col, *H_multi_H_transpose;
+    vector *H_new = init_zero_matrix(n, k), *H_col = NULL, *H_multi_H_transpose = NULL;
     vector *curr_H_new_row = H_new, *curr_H_row = H;
     cord *curr_H_new_cord, *curr_H_cord;
 
@@ -164,8 +164,8 @@ vector* c_symnmf(vector* H, vector* W, int n, int k) {
             curr_H_new_cord = curr_H_new_row->cords;
             curr_H_cord = curr_H_row->cords;
             for (j = 0; j < k; ++j) {
-                new_value =  curr_H_cord->value * (0.5 +
-                        0.5 * (get_the_ij_value_of_matrix_multi(W, H_col, i, j) /
+                new_value =  curr_H_cord->value * ((1-beta) +
+                        beta * (get_the_ij_value_of_matrix_multi(W, H_col, i, j) /
                                 get_the_ij_value_of_matrix_multi(H_multi_H_transpose, H_col, i, j)));
                 curr_H_new_cord->value = new_value;
                 curr_H_new_cord = curr_H_new_cord->next;
