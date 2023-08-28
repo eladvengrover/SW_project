@@ -144,10 +144,20 @@ vector* c_norm(vector* A, vector* D, int n) {
     return W;
 }
 
+double get_delta_h_norm(vector* h_new, vector *h_old) {
+    return 1;
+}
+
+
 vector* c_symnmf(vector* H, vector* W, int n, int k) {
     double beta = 0.5, epsilon = 0.0001;
-    int max_iter = 300;
+    int max_iter = 300, iter = 0;
+    vector *H_new = init_zero_matrix(n, k);
 
+    while (iter < max_iter && get_delta_h_norm(H_new, H) >= epsilon) {
+
+        iter++;
+    }
 }
 
 
@@ -186,6 +196,11 @@ int main(int argc, char **argv) {
         D = c_ddg(A, n);
         W = c_norm(A, D, n);
         print_vec_arr(W);
+    } else if (strcmp(goal, "symm") == 0) {
+        A = c_sym(X, n);
+        print_vec_arr(A);
+        printf("------------\n");
+        print_vec_arr(get_col_matrix(A, n, n));
     }
 
     /**Free reest of memory*/

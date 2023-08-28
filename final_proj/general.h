@@ -20,6 +20,7 @@ typedef struct vector {
 void handle_errors();
 void free_cord(cord *cord1);
 void free_vec(vector *vec);
+vector *get_col_matrix(vector *mat, int rows, int cols);
 double euclidean_dist(cord *first, cord *second);
 vector *init_zero_matrix(int n, int d);
 double get_vector_sum(vector *vec);

@@ -32,6 +32,14 @@ void free_vec(vector *vec) {
     }
 }
 
+void free_cords_arr(cord **arr, int k) {
+    int i;
+    for (i = 0; i < k; i++) {
+        free_cord(arr[i]);
+    }
+    free(arr);
+}
+
 double euclidean_dist(cord* first, cord* second) {
     double dist = 0;
     cord* curr_first = first;
@@ -113,6 +121,32 @@ double* pow_mat_diag_values(double* mat_diag, int n, double x) {
         mat_diag[i] = pow(mat_diag[i], x);
     }
     return mat_diag;
+}
+
+
+vector* get_col_matrix(vector *mat, int rows, int cols) {
+    /** Get vector* mat s.t each vector represents a row,
+     * and returns vector * out s.t each vector represents column.**/
+    vector *out = init_zero_matrix(cols, rows), *curr_vec = mat;
+    cord **curr = malloc(rows * sizeof (cord*)), *curr_col;
+    int i = 0, j;
+    while (curr_vec != NULL) {
+        curr[i] = curr_vec->cords;
+        curr_vec = curr_vec->next;
+        i++;
+    }
+    curr_vec = out;
+    for (i = 0; i < cols; ++i) {
+        curr_col = curr_vec->cords;
+        for (j = 0; j < rows; ++j) {
+            curr_col->value = curr[j]->value;
+            curr[j] = curr[j]->next;
+            curr_col = curr_col->next;
+        }
+        curr_vec = curr_vec->next;
+    }
+    free_cords_arr(curr, rows);
+    return out;
 }
 
 
