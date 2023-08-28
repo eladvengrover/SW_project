@@ -145,7 +145,8 @@ vector* c_norm(vector* A, vector* D, int n) {
 }
 
 vector* c_symnmf(vector* H, vector* W, int n, int k) {
-
+    double beta = 0.5, epsilon = 0.0001;
+    int max_iter = 300;
 
 }
 
