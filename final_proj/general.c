@@ -161,19 +161,21 @@ double dot_product(vector *X, vector *Y) {
 }
 
 vector *get_mat_multi_with_its_transpose(vector* mat, int rows, int cols) {
-    vector *output = init_zero_matrix(rows, rows), *curr_row = output, *transpose_row;
-    cord *curr_col;
+    vector *output = init_zero_matrix(rows, rows), *mat_curr_row = mat, *mat_transpose_row;
+    vector *curr_output_row = output;
+    cord *curr_output_col;
     int i, j;
 
     for (i = 0; i < rows; ++i) {
-        curr_col = curr_row->cords;
-        transpose_row = output;
+        curr_output_col = curr_output_row->cords;
+        mat_transpose_row = mat;
         for (j = 0; j < rows; ++j) {
-            curr_col->value = dot_product(curr_row, transpose_row);
-            curr_col = curr_col->next;
-            transpose_row = transpose_row->next;
+            curr_output_col->value = dot_product(mat_curr_row, mat_transpose_row);
+            mat_transpose_row = mat_transpose_row->next;
+            curr_output_col = curr_output_col->next;
         }
-        curr_row = curr_row->next;
+        mat_curr_row = mat_curr_row->next;
+        curr_output_row = curr_output_row->next;
     }
     return output;
 }
