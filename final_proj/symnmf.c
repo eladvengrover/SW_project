@@ -76,7 +76,7 @@ int read_points(vector *head_vec, int* d, char* file_name) {
 
 
 vector* c_sym(vector* X, int n) {
-    vector *A = init_zero_matrix(n), *curr_A_row = A;
+    vector *A = init_zero_matrix(n, n), *curr_A_row = A;
     vector *X_i = X, *X_j;
     cord *curr_A_cord;
 
@@ -98,7 +98,7 @@ vector* c_sym(vector* X, int n) {
 
 
 vector* c_ddg(vector* A, int n) {
-    vector *D = init_zero_matrix(n), *D_i = D;
+    vector *D = init_zero_matrix(n, n), *D_i = D;
     cord* D_j;
     vector *curr_vec = A;
     double vec_sums[n];
@@ -122,7 +122,7 @@ vector* c_ddg(vector* A, int n) {
 }
 
 vector* c_norm(vector* A, vector* D, int n) {
-    vector *W = init_zero_matrix(n);
+    vector *W = init_zero_matrix(n, n);
     double* D_diag = get_matrix_diag_values(D, n);
     D_diag = pow_mat_diag_values(D_diag, n, -0.5);
     vector* curr_A_row = A, *curr_W_row = W;

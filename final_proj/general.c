@@ -45,7 +45,7 @@ double euclidean_dist(cord* first, cord* second) {
 }
 
 
-vector* init_zero_matrix(int n) {
+vector* init_zero_matrix(int n, int d) {
     vector *zero_mat = malloc(sizeof (vector)), *curr = zero_mat;
     cord* cord_curr;
     vector *curr_i = curr;  // running pointers on X rows/cols
@@ -59,9 +59,9 @@ vector* init_zero_matrix(int n) {
             handle_errors();
         }
         cord_curr = curr->cords;
-        for (int j = 0; j < n; ++j) {  // Running on cols
+        for (int j = 0; j < d; ++j) {  // Running on cols
             cord_curr->value = 0;
-            if (j != n - 1) {  // Handle all cols except the last one
+            if (j != d - 1) {  // Handle all cols except the last one
                 cord_curr->next = malloc(sizeof (cord));
                 cord_curr = cord_curr->next;
             }
