@@ -149,6 +149,47 @@ vector* get_col_matrix(vector *mat, int rows, int cols) {
     return out;
 }
 
+double dot_product(vector *X, vector *Y) {
+    double output = 0;
+    cord *X_curr = X->cords, *Y_curr = Y->cords;
+    while (X_curr != NULL) {
+        output += (X_curr->value * Y_curr->value);
+        X_curr = X_curr->next;
+        Y_curr = Y_curr->next;
+    }
+    return output;
+}
+
+vector *get_mat_multi_with_its_transpose(vector* mat, int rows, int cols) {
+    vector *output = init_zero_matrix(rows, rows), *curr_row = output, *transpose_row;
+    cord *curr_col;
+    int i, j;
+
+    for (i = 0; i < rows; ++i) {
+        curr_col = curr_row->cords;
+        transpose_row = output;
+        for (j = 0; j < rows; ++j) {
+            curr_col->value = dot_product(curr_row, transpose_row);
+            curr_col = curr_col->next;
+            transpose_row = transpose_row->next;
+        }
+        curr_row = curr_row->next;
+    }
+    return output;
+}
+
+double get_the_ij_value_of_matrix_multi(vector *X, vector *Y_col, int i, int j) {
+    /** Y_col is the matrix from right, that's why it has to be a column matrix.**/
+    int k;
+    for (k = 0; k < i; ++k) {
+        X = X->next;
+    }
+    for (k = 0; k < j; ++k) {
+        Y_col = Y_col->next;
+    }
+    return dot_product(X, Y_col);
+}
+
 
 void print_vec_arr(vector* vec_arr) {
     vector* curr_vec = vec_arr;
