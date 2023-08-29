@@ -54,7 +54,6 @@ void read_points_from_python(vector *head_vec, PyObject *head_vec_obj, int d, in
 
         curr_vec = curr_vec->next;
     }
-
     free_vec(last_vec->next);
     last_vec->next = NULL;
 }
@@ -200,22 +199,20 @@ static PyObject* symnmf_wrapper(PyObject *self, PyObject *args)
     PyObject* H_obj;
     PyObject* W_obj;
     PyObject* py_output;
-    int n, d, k;
+    int n, k;
     /* This parses the Python arguments into C variables*/
-    if(!PyArg_ParseTuple(args, "OOii", &H_obj, &W_obj, &d, &k)) {
+    if(!PyArg_ParseTuple(args, "OOi", &H_obj, &W_obj, &k)) {
         return NULL;
     }
-
-    vector *W = py_obj_to_vector(W_obj, d);
-    vector *H = py_obj_to_vector(H_obj, d);
     n = PyObject_Length(W_obj);
+    vector *W = py_obj_to_vector(W_obj, n);
+    vector *H = py_obj_to_vector(H_obj, k);
+
     vector *optimized_H = c_symnmf(H, W, n, k);
 
     py_output = vector_to_py_obj(optimized_H, n, k);
-
-    /**Free reest of memory*/
+    // /**Free reest of memory*/
     free_vec(W);
-    free_vec(H);
     free_vec(optimized_H);
 
     return Py_BuildValue("O", py_output);

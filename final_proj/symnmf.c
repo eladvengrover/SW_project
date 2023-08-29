@@ -168,8 +168,8 @@ vector* c_symnmf(vector* H, vector* W, int n, int k) {
             curr_H_cord = curr_H_row->cords;
             for (j = 0; j < k; ++j) {
                 new_value =  curr_H_cord->value * ((1-beta) +
-                        beta * (get_the_ij_value_of_matrix_multi(W, H_col, i, j) /
-                                get_the_ij_value_of_matrix_multi(H_multi_H_transpose, H_col, i, j)));
+                                                   beta * (get_the_ij_value_of_matrix_multi(W, H_col, i, j) /
+                                                           get_the_ij_value_of_matrix_multi(H_multi_H_transpose, H_col, i, j)));
                 curr_H_new_cord->value = new_value;
                 curr_H_new_cord = curr_H_new_cord->next;
                 curr_H_cord = curr_H_cord->next;
@@ -188,7 +188,7 @@ vector* c_symnmf(vector* H, vector* W, int n, int k) {
 
 
 int main(int argc, char **argv) {
-    vector *X, *A = NULL, *D = NULL, *W = NULL;
+    vector *X, *A = NULL, *D = NULL, *W = NULL, *H = NULL, *optimized_H = NULL;
     int n, d_value = 0;
 
     /** Read args*/
@@ -222,10 +222,6 @@ int main(int argc, char **argv) {
         D = c_ddg(A, n);
         W = c_norm(A, D, n);
         print_vec_arr(W);
-    } else {
-        A = c_sym(X, n);
-        D = c_ddg(A, n);
-        W = c_norm(A, D, n);
     }
 
     /**Free reest of memory*/
@@ -233,6 +229,10 @@ int main(int argc, char **argv) {
     free_vec(A);
     free_vec(D);
     free_vec(W);
+    free_vec(H);
+    free_vec(optimized_H);
+
+
 
     return 0;
 }

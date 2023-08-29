@@ -2,7 +2,7 @@ import math
 import sys
 import pandas as pd
 import numpy as np
-# import symmnfAPI
+import symmnfAPI
 
 
 SYMNMF = "symnmf"
@@ -41,7 +41,7 @@ file_name = "input.txt"
 X = pd.read_csv(file_name, header=None)
 
 N = X.shape[0]
-D = X.shape[1]
+D = int(X.shape[1])
 
 X_lst = prepare_args_to_c(X)
 c_output = None
@@ -54,8 +54,8 @@ try:
         c_output = symmnfAPI.norm(X_lst, D)
     elif goal == SYMNMF:
         W = symmnfAPI.norm(X_lst, D)
-        H = init_h(W, K, N)
-        c_output = symmnfAPI.symnmf(H, W, D)
+        H = init_h(W, K, N).tolist()
+        c_output = symmnfAPI.symnmf(H, W, K)
     for centroid in c_output:
         print(','.join('{:.4f}'.format(num) for num in centroid))
 except ValueError as e:
