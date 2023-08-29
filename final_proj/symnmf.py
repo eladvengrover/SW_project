@@ -36,7 +36,7 @@ np.random.seed(0)
 
 K = int(args[1])
 goal = args[2]
-file_name = "input.txt"
+file_name = args[3]
 
 X = pd.read_csv(file_name, header=None)
 
