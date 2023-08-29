@@ -145,7 +145,25 @@ vector* c_norm(vector* A, vector* D, int n) {
 }
 
 double get_delta_h_norm(vector* h_new, vector *h_old) {
-    return 1;
+    if (h_new == NULL) {
+        return 1;
+    }
+    double output = 0;
+    vector *h_old_row = h_old, *h_new_row = h_new;
+    cord *h_old_col, *h_new_col;
+
+    while (h_new_row != NULL && h_old_row != NULL) {
+        h_new_col = h_new_row->cords;
+        h_old_col = h_old_row->cords;
+        while (h_old_col != NULL && h_new_col != NULL) {
+            output += (pow((h_new_col->value - h_old_col->value), 2));
+            h_new_col = h_new_col->next;
+            h_old_col = h_old_col->next;
+        }
+        h_old_row = h_old_row->next;
+        h_new_row = h_new_row->next;
+    }
+    return output;
 }
 
 
@@ -156,7 +174,7 @@ vector* c_symnmf(vector* H, vector* W, int n, int k) {
     vector *curr_H_new_row = NULL, *curr_H_row = NULL;
     cord *curr_H_new_cord, *curr_H_cord;
 
-    while (iter < max_iter && get_delta_h_norm(H_new, H) >= epsilon) {
+    while (iter < max_iter) {
         H_col = get_col_matrix(H, n, k);
         H_multi_H_transpose = get_mat_multi_with_its_transpose(H, n, k);
         H_new = init_zero_matrix(n, k);
@@ -176,6 +194,12 @@ vector* c_symnmf(vector* H, vector* W, int n, int k) {
             }
             curr_H_new_row = curr_H_new_row->next;
             curr_H_row = curr_H_row->next;
+        }
+        if (get_delta_h_norm(H_new, H) < epsilon) {
+            free_vec(H_col);
+            free_vec(H_multi_H_transpose);
+            free_vec(H);
+            break;
         }
         free_vec(H_col);
         free_vec(H_multi_H_transpose);
