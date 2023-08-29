@@ -56,26 +56,27 @@ double euclidean_dist(cord* first, cord* second) {
 vector* init_zero_matrix(int n, int d) {
     vector *zero_mat = malloc(sizeof (vector)), *curr = zero_mat;
     cord* cord_curr;
-    vector *curr_i = curr;  // running pointers on X rows/cols
+    int i, j;
+    vector *curr_i = curr;  /* running pointers on X rows/cols */
     if (zero_mat == NULL) {
         handle_errors();
     }
 
-    for (int i = 0; i < n; ++i) {  // Running on rows
+    for (i = 0; i < n; ++i) {  /* Running on rows */
         curr->cords = malloc(sizeof (cord));
         if (curr->cords == NULL) {
             handle_errors();
         }
         cord_curr = curr->cords;
-        for (int j = 0; j < d; ++j) {  // Running on cols
+        for (j = 0; j < d; ++j) {  /* Running on cols */
             cord_curr->value = 0;
-            if (j != d - 1) {  // Handle all cols except the last one
+            if (j != d - 1) {  /* Handle all cols except the last one */
                 cord_curr->next = malloc(sizeof (cord));
                 cord_curr = cord_curr->next;
             }
         }
         cord_curr->next = NULL;
-        if (i != n - 1) {  // Handle all lines except the last one
+        if (i != n - 1) {  /* Handle all lines except the last one */
             curr->next = malloc(sizeof (vector));
             curr = curr->next;
         }
@@ -101,10 +102,11 @@ double* get_matrix_diag_values(vector* mat, int n) {
     double* diag_values = malloc(n * sizeof (double ));
     vector* curr_vec = mat;
     cord* curr_cord;
+    int i, j;
 
-    for (int i = 0; i < n; ++i) {  // Running on rows
+    for (i = 0; i < n; ++i) {  /* Running on rows */
         curr_cord = curr_vec->cords;
-        for (int j = 0; j < n; ++j) {  // Running on cols
+        for (j = 0; j < n; ++j) {  /* Running on cols */
             if (i == j) {
                 diag_values[i] = curr_cord->value;
                 break;
@@ -117,7 +119,8 @@ double* get_matrix_diag_values(vector* mat, int n) {
 }
 
 double* pow_mat_diag_values(double* mat_diag, int n, double x) {
-    for (int i = 0; i < n; ++i) {
+    int i;
+    for (i = 0; i < n; ++i) {
         mat_diag[i] = pow(mat_diag[i], x);
     }
     return mat_diag;
@@ -160,7 +163,7 @@ double dot_product(vector *X, vector *Y) {
     return output;
 }
 
-vector *get_mat_multi_with_its_transpose(vector* mat, int rows, int cols) {
+vector *get_mat_multi_with_its_transpose(vector* mat, int rows) {
     vector *output = init_zero_matrix(rows, rows), *mat_curr_row = mat, *mat_transpose_row;
     vector *curr_output_row = output;
     cord *curr_output_col;

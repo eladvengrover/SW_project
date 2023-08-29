@@ -11,9 +11,8 @@ int read_points(vector *head_vec, int* d, char* file_name) {
     double dp_curr_cord;
     char c;
     int n = 0, d_flag = 1;
-    FILE *f = fopen("C:\\Users\\Elad\\CLionProjects\\SW_project\\final_proj\\input.txt", "r");
-    // TODO - remove hard-coded path and use file_name instead
-
+    FILE *f = fopen(file_name, "r");
+    /* TODO - remove hard-coded path and use file_name instead */
 
     head_cord = head_vec->cords;
     curr_cord = head_cord;
@@ -79,11 +78,12 @@ vector* c_sym(vector* X, int n) {
     vector *A = init_zero_matrix(n, n), *curr_A_row = A;
     vector *X_i = X, *X_j;
     cord *curr_A_cord;
+    int i, j;
 
-    for (int i = 0; i < n; ++i) {
+    for (i = 0; i < n; ++i) {
         X_j = X;
         curr_A_cord = curr_A_row->cords;
-        for (int j = 0; j < n; ++j) {
+        for (j = 0; j < n; ++j) {
             if (i != j) {
                 curr_A_cord->value = exp(-0.5 * euclidean_dist(X_i->cords, X_j->cords));
             }
@@ -101,15 +101,16 @@ vector* c_ddg(vector* A, int n) {
     vector *D = init_zero_matrix(n, n), *D_i = D;
     cord* D_j;
     vector *curr_vec = A;
+    int i, j;
     double vec_sums[n];
-    for (int i = 0; i < n; ++i) {
+    for (i = 0; i < n; ++i) {
         vec_sums[i] = get_vector_sum(curr_vec);
         curr_vec = curr_vec->next;
     }
 
-    for (int i = 0; i < n; ++i) {  // Running on rows
+    for (i = 0; i < n; ++i) {  /* Running on rows */
         D_j = D_i->cords;
-        for (int j = 0; j < n; ++j) {  // Running on cols
+        for (j = 0; j < n; ++j) {  /* Running on cols */
             if (i == j) {
                 D_j->value = vec_sums[i];
                 break;
@@ -123,15 +124,20 @@ vector* c_ddg(vector* A, int n) {
 
 vector* c_norm(vector* A, vector* D, int n) {
     vector *W = init_zero_matrix(n, n);
-    double* D_diag = get_matrix_diag_values(D, n);
+    double* D_diag;
+    int i, j;
+    vector *curr_A_row;
+    vector *curr_W_row;
+    cord *curr_A_cord, *curr_W_cord;
     D_diag = pow_mat_diag_values(D_diag, n, -0.5);
-    vector* curr_A_row = A, *curr_W_row = W;
-    cord* curr_A_cord, *curr_W_cord;
+    D_diag = get_matrix_diag_values(D, n);
+    curr_A_row = A;
+    curr_W_row = W;
 
-    for (int i = 0; i < n; ++i) {
+    for (i = 0; i < n; ++i) {
         curr_A_cord = curr_A_row->cords;
         curr_W_cord = curr_W_row->cords;
-        for (int j = 0; j < n; ++j) {
+        for (j = 0; j < n; ++j) {
             if (i != j) {
                 curr_W_cord->value = D_diag[i] * D_diag[j] * curr_A_cord->value;
             }
@@ -145,12 +151,14 @@ vector* c_norm(vector* A, vector* D, int n) {
 }
 
 double get_delta_h_norm(vector* h_new, vector *h_old) {
+    double output;
+    vector *h_old_row = h_old, *h_new_row = h_new;
+    cord *h_old_col, *h_new_col;
+    output = 0;
+
     if (h_new == NULL) {
         return 1;
     }
-    double output = 0;
-    vector *h_old_row = h_old, *h_new_row = h_new;
-    cord *h_old_col, *h_new_col;
 
     while (h_new_row != NULL && h_old_row != NULL) {
         h_new_col = h_new_row->cords;
@@ -176,7 +184,7 @@ vector* c_symnmf(vector* H, vector* W, int n, int k) {
 
     while (iter < max_iter) {
         H_col = get_col_matrix(H, n, k);
-        H_multi_H_transpose = get_mat_multi_with_its_transpose(H, n, k);
+        H_multi_H_transpose = get_mat_multi_with_its_transpose(H, n);
         H_new = init_zero_matrix(n, k);
         curr_H_new_row = H_new;
         curr_H_row = H;
@@ -214,10 +222,14 @@ vector* c_symnmf(vector* H, vector* W, int n, int k) {
 int main(int argc, char **argv) {
     vector *X, *A = NULL, *D = NULL, *W = NULL, *H = NULL, *optimized_H = NULL;
     int n, d_value = 0;
+    char *goal, *file_name;
+    if (argc != 3) {
+        exit(1);
+    }
 
     /** Read args*/
-    char* goal = argv[1];
-    char* file_name = argv[2];
+    goal = argv[1];
+    file_name = argv[2];
 
     /**Allocating memory for head of vectors LL*/
     X = malloc(sizeof(struct vector));
@@ -231,7 +243,7 @@ int main(int argc, char **argv) {
     }
     X->cords->value = 0;
     X->cords->next = NULL;
-    //TODO - consider removing d
+    /* TODO - consider removing d */
     n = read_points(X, &d_value, file_name);
 
     if (strcmp(goal, "sym") == 0) {
