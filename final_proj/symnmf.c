@@ -12,7 +12,6 @@ int read_points(vector *head_vec, int* d, char* file_name) {
     char c;
     int n = 0, d_flag = 1;
     FILE *f = fopen(file_name, "r");
-    /* TODO - remove hard-coded path and use file_name instead */
 
     head_cord = head_vec->cords;
     curr_cord = head_cord;
@@ -102,7 +101,11 @@ vector* c_ddg(vector* A, int n) {
     cord* D_j;
     vector *curr_vec = A;
     int i, j;
-    double vec_sums[n];
+    double *vec_sums = malloc (n * sizeof (double));
+    if (vec_sums == NULL) {
+        handle_errors();
+    }
+
     for (i = 0; i < n; ++i) {
         vec_sums[i] = get_vector_sum(curr_vec);
         curr_vec = curr_vec->next;
@@ -119,18 +122,19 @@ vector* c_ddg(vector* A, int n) {
         }
         D_i = D_i->next;
     }
+    free(vec_sums);
     return D;
 }
 
 vector* c_norm(vector* A, vector* D, int n) {
     vector *W = init_zero_matrix(n, n);
-    double* D_diag;
     int i, j;
     vector *curr_A_row;
     vector *curr_W_row;
     cord *curr_A_cord, *curr_W_cord;
-    D_diag = pow_mat_diag_values(D_diag, n, -0.5);
+    double* D_diag;
     D_diag = get_matrix_diag_values(D, n);
+    D_diag = pow_mat_diag_values(D_diag, n, -0.5);
     curr_A_row = A;
     curr_W_row = W;
 
@@ -147,6 +151,7 @@ vector* c_norm(vector* A, vector* D, int n) {
         curr_A_row = curr_A_row->next;
         curr_W_row = curr_W_row->next;
     }
+    free(D_diag);
     return W;
 }
 
@@ -243,7 +248,6 @@ int main(int argc, char **argv) {
     }
     X->cords->value = 0;
     X->cords->next = NULL;
-    /* TODO - consider removing d */
     n = read_points(X, &d_value, file_name);
 
     if (strcmp(goal, "sym") == 0) {

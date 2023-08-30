@@ -104,6 +104,10 @@ double* get_matrix_diag_values(vector* mat, int n) {
     cord* curr_cord;
     int i, j;
 
+    if (diag_values == NULL) {
+        handle_errors();
+    }
+
     for (i = 0; i < n; ++i) {  /* Running on rows */
         curr_cord = curr_vec->cords;
         for (j = 0; j < n; ++j) {  /* Running on cols */
