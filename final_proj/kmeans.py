@@ -60,17 +60,17 @@ def calculate_clusters_centroid(data_points, cluster):
 
 def k_means_alg(centroids, data_points, K, epsilon, iter):
     convergence = True
-    output = [[] for i in range(K)]
+    output = [-1 for i in range(len(data_points))]
     for i in range(iter):
         # Assign each point to the closest centroid
         clusters = [[] for i in range(K)]
-        for data_point in data_points:
-            closest_centroid = find_cluster(centroids, data_point)
-            clusters[closest_centroid].append(data_point)
+        for data_point_index in range(len(data_points)):
+            closest_centroid = find_cluster(centroids, data_points[data_point_index])
+            clusters[closest_centroid].append(data_points[data_point_index])
+            output[data_point_index] = closest_centroid
 
         # Calculate the new centroids as the mean of the points in each cluster
         new_centroids = []
-        output = clusters
         for cluster in clusters:
             prev_centroid = centroids[clusters.index(cluster)]
             if cluster:
